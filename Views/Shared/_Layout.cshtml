@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BlackJack ft.Salazar</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        body.with-navbar {
+            padding-top: 80px;
+        }
+
+        body.auth-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .custom-navbar {
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            background: linear-gradient(90deg, #18181a 0%, #232524 100%);
+            border-bottom: 4px solid rgba(255, 222, 79, 0.7);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.14);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .navbar-title {
+            color: #FFE500;
+            font-size: 1.5rem;
+            font-weight: 510;
+            letter-spacing: 2px;
+        }
+
+        .navbar-menu {
+            list-style: none;
+            display: flex;
+            gap: 28px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-menu li a {
+            color: #FFD700;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 505;
+            padding: 4px 16px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .navbar-menu li a:hover {
+            background: rgba(255, 233, 59, 0.16);
+        }
+
+        .container.with-padding {
+            padding: 20px;
+        }
+
+        .container.no-padding {
+            padding: 0;
+            max-width: none;
+            width: 100%;
+        }
+
+        @@media (max-width: 700px) {
+            .navbar-title {
+                font-size: 1.15rem;
+                letter-spacing: 1px;
+            }
+            .navbar-menu {
+                gap: 10px;
+            }
+            .navbar-menu li a {
+                font-size: 1rem;
+                padding: 4px 8px;
+            }
+            .custom-navbar {
+                padding: 10px 5px;
+            }
+        }
+    </style>
+</head>
+<body class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Login" || 
+               ViewContext.RouteData.Values["action"]?.ToString() == "Registro" ? "auth-page" : "with-navbar")">
+    <header>
+        @if (ViewContext.RouteData.Values["action"]?.ToString() != "Login" && 
+             ViewContext.RouteData.Values["action"]?.ToString() != "Registro")
+        {
+            <nav class="custom-navbar" role="navigation">
+                <div class="navbar-title">BLACKJACK ft.Salazar</div>
+                <ul class="navbar-menu">
+                    <li><a asp-area="" asp-controller="ControladorJuego" asp-action="Index">Juego</a></li>
+                    <li><a asp-area="" asp-controller="ControladorTienda" asp-action="Index">Tienda</a></li>
+                </ul>
+            </nav>
+        }
+    </header>
+    <div class="container @(ViewContext.RouteData.Values["action"]?.ToString() == "Login" || 
+                             ViewContext.RouteData.Values["action"]?.ToString() == "Registro" ? "no-padding" : "with-padding")">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    <script src="~/lib/jqry/dist/jqry.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

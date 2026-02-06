@@ -1,0 +1,252 @@
+@model ArticuloTienda
+@{
+    ViewData["Title"] = "Crear Artículo";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, #1a1a2e, #16213e);
+        min-height: 100vh;
+        padding: 20px;
+        color: white;
+    }
+    
+    .tienda-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .header-tienda {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 215, 0, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .nav-buttons {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .btn-nav {
+        padding: 12px 25px;
+        background: #4a5568;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+    
+    .btn-nav:hover {
+        background: #5a6578;
+        transform: translateY(-2px);
+    }
+
+    .titulo-seccion {
+        font-size: 32px;
+        margin: 0;
+        color: #ffd700;
+    }
+
+    .form-container {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        border-radius: 15px;
+        padding: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #ffd700;
+        font-size: 16px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        border-radius: 8px;
+        font-size: 16px;
+        background: rgba(0, 0, 0, 0.2);
+        color: white;
+        transition: all 0.3s;
+        box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #ffd700;
+        box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+    }
+
+    .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .form-group small {
+        display: block;
+        margin-top: 5px;
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    .btn-submit {
+        flex: 1;
+        padding: 15px;
+        background: linear-gradient(135deg, #4ade80, #22c55e);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-submit:hover {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        transform: scale(1.02);
+    }
+
+    .btn-cancel {
+        flex: 1;
+        padding: 15px;
+        background: #4a5568;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .btn-cancel:hover {
+        background: #5a6578;
+    }
+
+    .validation-error {
+        color: #ef4444;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .error-message {
+        background: #ef4444;
+        border: 1px solid #dc2626;
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .emoji-preview {
+        font-size: 60px;
+        text-align: center;
+        margin: 10px 0;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+    }
+</style>
+
+<div class="tienda-container">
+    <div class="header-tienda">
+        <div>
+            <div class="titulo-seccion">Crear Nuevo Articulo</div>
+        </div>
+        <div class="nav-buttons">
+            <a href="/Admin/Tienda" class="btn-nav">Volver a Tienda</a>
+        </div>
+    </div>
+
+    <div class="form-container">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="error-message">
+                @Html.ValidationSummary(false)
+            </div>
+        }
+
+        <form asp-action="CrearArticulo" method="post">
+            <div class="form-group">
+                <label asp-for="Nombre">Nombre del Articulo</label>
+                <input asp-for="Nombre" placeholder="Ej: Baraja Premium"/>
+                <span asp-validation-for="Nombre" class="validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Descripcion">Descripcion</label>
+                <textarea asp-for="Descripcion" placeholder="Describe el artículo..."></textarea>
+                <span asp-validation-for="Descripcion" class="validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PrecioFichas">Precio en Fichas</label>
+                <input asp-for="PrecioFichas" type="number" min="1" placeholder="100"/>
+                <span asp-validation-for="PrecioFichas" class="validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TipoArticulo">Tipo de Articulo</label>
+                <select asp-for="TipoArticulo">
+                    <option value="">Seleccionar tipo...</option>
+                    <option value="carta">Carta</option>
+                    <option value="fondo">Fondo</option>
+                    <option value="avatar">Avatar</option>
+                    <option value="bonus">Bonus</option>
+                    <option value="especial">Especial</option>
+                </select>
+                <span asp-validation-for="TipoArticulo" class="validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ImagenUrl">Icono (Emoji o URL)</label>
+                <input asp-for="ImagenUrl" id="imagenInput" placeholder="Ej: icono o URL de imagen"/>
+                <small>Puedes usar un emoji o una URL de imagen</small>
+                <span asp-validation-for="ImagenUrl" class="validation-error"></span>
+                <div class="emoji-preview" id="emojiPreview"></div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">Crear Artículo</button>
+                <a href="/Admin/Tienda" class="btn-cancel">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('imagenInput').addEventListener('input', function(e) {
+            document.getElementById('emojiPreview').textContent = e.target.value;
+        });
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

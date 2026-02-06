@@ -1,0 +1,284 @@
+@model VistaTienda
+@{
+    ViewData["Title"] = "Tienda Blackjack";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, #1a1a2e, #16213e);
+        min-height: 100vh;
+        padding: 20px;
+        color: white;
+    }
+    
+    .tienda-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .header-tienda {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 215, 0, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .fichas-display {
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #000;
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-size: 24px;
+        font-weight: bold;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    }
+    
+    .nav-buttons {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .btn-nav {
+        padding: 12px 25px;
+        background: #4a5568;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .btn-nav:hover {
+        background: #5a6578;
+        transform: translateY(-2px);
+    }
+    
+    .seccion-tienda {
+        margin-bottom: 40px;
+    }
+    
+    .titulo-seccion {
+        font-size: 32px;
+        margin-bottom: 20px;
+        color: #ffd700;
+    }
+    
+    .grid-articulos {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+    
+    .card-articulo {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        border-radius: 15px;
+        padding: 20px;
+        transition: all 0.3s;
+    }
+    
+    .card-articulo:hover {
+        transform: translateY(-5px);
+        border-color: #ffd700;
+        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2);
+    }
+    
+    .icono-articulo {
+        font-size: 60px;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    
+    .nombre-articulo {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #ffd700;
+    }
+    
+    .descripcion-articulo {
+        color: #b0b0b0;
+        margin-bottom: 15px;
+        min-height: 40px;
+    }
+    
+    .precio-articulo {
+        font-size: 20px;
+        font-weight: bold;
+        color: #4ade80;
+        margin-bottom: 15px;
+    }
+    
+    .btn-comprar {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(135deg, #4ade80, #22c55e);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .btn-comprar:hover {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        transform: scale(1.05);
+    }
+    
+    .btn-comprar:disabled {
+        background: #555;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+    
+    .badge-comprado {
+        background: #9333ea;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        text-align: center;
+    }
+    
+    .mensaje-notificacion {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 20px 30px;
+        border-radius: 10px;
+        font-weight: bold;
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    .mensaje-exito {
+        background: #22c55e;
+        color: white;
+    }
+    
+    .mensaje-error {
+        background: #ef4444;
+        color: white;
+    }
+    
+	/*Usar Doble arroba pa q razor no lo interprete como c#*/
+    @@keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+</style>
+
+<div class="tienda-container">
+	<div class="header-tienda">
+		<div>
+			<h1>Tienda Blackjack</h1>
+			<div style="color: #ffd700; margin-top: 10px;">
+				Bienvenido, @ViewBag.NombreUsuario
+			</div>
+		</div>
+		<div>
+			<div class="fichas-display" id="fichas-display">
+				💰 <span id="cantidad-fichas">@Model.UsuarioActual.FichasDisponibles</span> Fichas
+			</div>
+		</div>
+		<div class="nav-buttons">
+			<a href="/ControladorJuego/Index">
+				<button class="btn-nav">Volver al Juego</button>
+			</a>
+			<a href="/ControladorAutenticacion/CerrarSesion">
+				<button class="btn-nav" style="background: #f44336;">Salir</button>
+			</a>
+		</div>
+	</div>
+
+    <div class="seccion-tienda">
+        <h2 class="titulo-seccion">Articulos Disponibles</h2>
+        <div class="grid-articulos">
+            @foreach (var articulo in Model.ArticulosDisponibles)
+            {
+                <div class="card-articulo">
+                    <div class="icono-articulo">@articulo.ImagenUrl</div>
+                    <div class="nombre-articulo">@articulo.Nombre</div>
+                    <div class="descripcion-articulo">@articulo.Descripcion</div>
+                    <div class="precio-articulo">💰 @articulo.PrecioFichas Fichas</div>
+                    <button class="btn-comprar" 
+                            onclick="comprarArticulo(@Model.UsuarioActual.Id, @articulo.Id, @articulo.PrecioFichas)">
+                        Comprar
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (Model.ArticulosComprados.Any())
+    {
+        <div class="seccion-tienda">
+            <h2 class="titulo-seccion">Mis Articulos</h2>
+            <div class="grid-articulos">
+                @foreach (var articulo in Model.ArticulosComprados)
+                {
+                    <div class="card-articulo">
+                        <div class="icono-articulo">@articulo.ImagenUrl</div>
+                        <div class="nombre-articulo">@articulo.Nombre</div>
+                        <div class="descripcion-articulo">@articulo.Descripcion</div>
+                        <div class="badge-comprado">✓ Comprado</div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        async function comprarArticulo(usuarioId, articuloId, precio) {
+            const fichasActuales = parseInt(document.getElementById('cantidad-fichas').textContent);
+            
+            if (fichasActuales < precio) {
+                mostrarMensaje('No tienes suficientes fichas', false);
+                return;
+            }
+
+            const respuesta = await fetch('/ControladorTienda/Comprar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuarioId, articuloId })
+            });
+
+            const resultado = await respuesta.json();
+
+            if (resultado.exitosa) {
+                mostrarMensaje(resultado.mensaje, true);
+                actualizarFichas(resultado.fichasRestantes);
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                mostrarMensaje(resultado.mensaje, false);
+            }
+        }
+
+        function actualizarFichas(nuevasCantidad) {
+            document.getElementById('cantidad-fichas').textContent = nuevasCantidad;
+        }
+
+        function mostrarMensaje(texto, esExito) {
+            const mensaje = document.createElement('div');
+            mensaje.className = `mensaje-notificacion ${esExito ? 'mensaje-exito' : 'mensaje-error'}`;
+            mensaje.textContent = texto;
+            document.body.appendChild(mensaje);
+            setTimeout(() => mensaje.remove(), 3000);
+        }
+    </script>
+}

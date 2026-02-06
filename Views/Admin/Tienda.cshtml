@@ -1,0 +1,326 @@
+@model List<ArticuloConEstadisticas>
+@{
+    ViewData["Title"] = "Gestión de Tienda";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, #1a1a2e, #16213e);
+        min-height: 100vh;
+        padding: 20px;
+        color: white;
+    }
+    
+    .tienda-container {
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+    
+    .header-tienda {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 215, 0, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .nav-buttons {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .btn-nav {
+        padding: 12px 25px;
+        background: #4a5568;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+    
+    .btn-nav:hover {
+        background: #5a6578;
+        transform: translateY(-2px);
+    }
+
+    .titulo-seccion {
+        font-size: 32px;
+        margin-bottom: 20px;
+        color: #ffd700;
+    }
+
+    .btn-crear {
+        padding: 15px 30px;
+        background: linear-gradient(135deg, #4ade80, #22c55e);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+    .btn-crear:hover {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        transform: scale(1.05);
+    }
+
+    .articulos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .card-articulo {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        border-radius: 15px;
+        padding: 20px;
+        transition: all 0.3s;
+        position: relative;
+    }
+
+    .card-articulo:hover {
+        transform: translateY(-5px);
+        border-color: #ffd700;
+        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2);
+    }
+
+    .card-articulo.inactivo {
+        opacity: 0.5;
+        border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .badge-estado {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .badge-activo {
+        background: #4ade80;
+        color: white;
+    }
+
+    .badge-inactivo {
+        background: #ef4444;
+        color: white;
+    }
+
+    .icono-articulo {
+        font-size: 50px;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .nombre-articulo {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #ffd700;
+    }
+
+    .descripcion-articulo {
+        color: #b0b0b0;
+        margin-bottom: 15px;
+        min-height: 40px;
+        font-size: 14px;
+    }
+
+    .info-articulo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+    }
+
+    .info-item {
+        text-align: center;
+    }
+
+    .info-label {
+        font-size: 12px;
+        color: #94a3b8;
+    }
+
+    .info-value {
+        font-size: 18px;
+        font-weight: bold;
+        color: #ffd700;
+    }
+
+    .acciones-articulo {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 14px;
+    }
+
+    .btn-editar {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+
+    .btn-editar:hover {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    }
+
+    .btn-toggle {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .btn-toggle:hover {
+        background: linear-gradient(135deg, #d97706, #b45309);
+    }
+
+    .mensaje-notificacion {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 20px 30px;
+        border-radius: 10px;
+        font-weight: bold;
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    .mensaje-exito {
+        background: #22c55e;
+        color: white;
+    }
+    
+    .mensaje-error {
+        background: #ef4444;
+        color: white;
+    }
+
+    @@keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+</style>
+
+<div class="tienda-container">
+    <div class="header-tienda">
+        <div>
+            <div class="titulo-seccion" style="margin: 0;">Gestión de Tienda</div>
+            <div style="margin-top: 5px; opacity: 0.9;">Total: @Model.Count artículos</div>
+        </div>
+        <div class="nav-buttons">
+            <a href="/Admin/Usuarios" class="btn-nav">Usuarios</a>
+            <a href="/Admin/Index" class="btn-nav">Dashboard</a>
+            <a href="/ControladorAutenticacion/CerrarSesion" class="btn-nav" style="background: #ef4444;">Salir</a>
+        </div>
+    </div>
+
+    <a href="/Admin/CrearArticulo" class="btn-crear">Crear Nuevo Articulo</a>
+
+    <div class="articulos-grid">
+        @foreach (var articulo in Model)
+        {
+            <div class="card-articulo @(!articulo.Disponible ? "inactivo" : "")">
+                <span class="badge-estado @(articulo.Disponible ? "badge-activo" : "badge-inactivo")">
+                    @(articulo.Disponible ? "ACTIVO" : "INACTIVO")
+                </span>
+
+                <div class="icono-articulo">@articulo.ImagenUrl</div>
+                <div class="nombre-articulo">@articulo.Nombre</div>
+                <div class="descripcion-articulo">@articulo.Descripcion</div>
+
+                <div class="info-articulo">
+                    <div class="info-item">
+                        <div class="info-label">Precio</div>
+                        <div class="info-value">@articulo.PrecioFichas</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Tipo</div>
+                        <div class="info-value">@articulo.TipoArticulo</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Vendidos</div>
+                        <div class="info-value">@articulo.TotalVendidos</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Fichas Gen.</div>
+                        <div class="info-value">@articulo.FichasGeneradas</div>
+                    </div>
+                </div>
+
+                <div class="acciones-articulo">
+                    <a href="/Admin/EditarArticulo/@articulo.Id" class="btn-action btn-editar">Editar</a>
+                    <button class="btn-action btn-toggle" 
+                            onclick="cambiarEstado(@articulo.Id, @(!articulo.Disponible ? "true" : "false"))">
+                        @(articulo.Disponible ? "Desactivar" : "✅ Activar")
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        async function cambiarEstado(articuloId, disponible) {
+            const accion = disponible ? "activar" : "desactivar";
+            
+            if (confirm(`¿Seguro que deseas ${accion} este artículo?`)) {
+                const respuesta = await fetch(`/Admin/CambiarEstadoArticulo?articuloId=${articuloId}&disponible=${disponible}`, {
+                    method: 'POST'
+                });
+
+                const resultado = await respuesta.json();
+                
+                if (resultado.exitoso) {
+                    mostrarMensaje(resultado.mensaje, true);
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    mostrarMensaje(resultado.mensaje, false);
+                }
+            }
+        }
+
+        function mostrarMensaje(texto, esExito) {
+            const mensaje = document.createElement('div');
+            mensaje.className = `mensaje-notificacion ${esExito ? 'mensaje-exito' : 'mensaje-error'}`;
+            mensaje.textContent = texto;
+            
+            document.body.appendChild(mensaje);
+            
+            setTimeout(() => mensaje.remove(), 3000);
+        }
+    </script>
+}

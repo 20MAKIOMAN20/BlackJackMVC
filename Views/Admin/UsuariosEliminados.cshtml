@@ -1,0 +1,274 @@
+@model List<UsuarioAdmin>
+@{
+    ViewData["Title"] = "Usuarios Eliminados";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, #1a1a2e, #16213e);
+        min-height: 100vh;
+        padding: 20px;
+        color: white;
+    }
+    
+    .tienda-container {
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+    
+    .header-tienda {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(239, 68, 68, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        border: 2px solid rgba(239, 68, 68, 0.3);
+    }
+    
+    .nav-buttons {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .btn-nav {
+        padding: 12px 25px;
+        background: #4a5568;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+    
+    .btn-nav:hover {
+        background: #5a6578;
+        transform: translateY(-2px);
+    }
+
+    .titulo-seccion {
+        font-size: 32px;
+        margin-bottom: 20px;
+        color: #ef4444;
+    }
+
+    .users-table {
+        background: rgba(239, 68, 68, 0.05);
+        border: 2px solid rgba(239, 68, 68, 0.3);
+        border-radius: 15px;
+        padding: 20px;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: rgba(239, 68, 68, 0.2);
+        padding: 15px;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 2px solid rgba(239, 68, 68, 0.3);
+        color: #ef4444;
+    }
+
+    td {
+        padding: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        opacity: 0.7;
+    }
+
+    tr:hover {
+        background: rgba(239, 68, 68, 0.05);
+    }
+
+    .btn-action {
+        padding: 8px 15px;
+        background: linear-gradient(135deg, #4ade80, #22c55e);
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-right: 5px;
+    }
+
+    .btn-action:hover {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        transform: scale(1.05);
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+    }
+
+    .mensaje-notificacion {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 20px 30px;
+        border-radius: 10px;
+        font-weight: bold;
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    .mensaje-exito {
+        background: #22c55e;
+        color: white;
+    }
+    
+    .mensaje-error {
+        background: #ef4444;
+        color: white;
+    }
+
+    @@keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #94a3b8;
+    }
+
+    .empty-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="tienda-container">
+    <div class="header-tienda">
+        <div>
+            <div class="titulo-seccion" style="margin: 0;">Usuarios Eliminados</div>
+            <div style="margin-top: 5px; opacity: 0.9;">Total: @Model.Count usuarios</div>
+        </div>
+        <div class="nav-buttons">
+            <a href="/Admin/Usuarios" class="btn-nav" style="background: #4ade80;">Activos</a>
+            <a href="/Admin/Index" class="btn-nav">Dashboard</a>
+            <a href="/ControladorAutenticacion/CerrarSesion" class="btn-nav" style="background: #ef4444;">Salir</a>
+        </div>
+    </div>
+
+    <div class="users-table">
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <div class="empty-icon">✨</div>
+                <h2>No hay usuarios eliminados</h2>
+                <p>Todos los usuarios están activos</p>
+            </div>
+        }
+        else
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Fichas</th>
+                        <th>Partidas</th>
+                        <th>Compras</th>
+                        <th>Registro</th>
+                        <th>Último Acceso</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var usuario in Model)
+                    {
+                        <tr>
+                            <td>@usuario.Id</td>
+                            <td><strong>@usuario.Nombre</strong></td>
+                            <td>@usuario.Email</td>
+                            <td style="color: #ffd700; font-weight: bold;">@usuario.FichasDisponibles</td>
+                            <td>@usuario.TotalPartidas</td>
+                            <td>🛒 @usuario.TotalCompras</td>
+                            <td>@usuario.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                            <td>@(usuario.UltimoAcceso?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca")</td>
+                            <td>
+                                <button class="btn-action" onclick="restaurarUsuario(@usuario.Id, '@usuario.Nombre')">
+                                    Restaurar
+                                </button>
+                                <button class="btn-action btn-danger" onclick="eliminarPermanente(@usuario.Id, '@usuario.Nombre')">
+                                    Eliminar Permanente
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        async function restaurarUsuario(usuarioId, nombreUsuario) {
+            if (confirm(`¿Restaurar al usuario "${nombreUsuario}"?`)) {
+                const respuesta = await fetch(`/Admin/RestaurarUsuario?usuarioId=${usuarioId}`, {
+                    method: 'POST'
+                });
+
+                const resultado = await respuesta.json();
+                
+                if (resultado.exitoso) {
+                    mostrarMensaje(resultado.mensaje, true);
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    mostrarMensaje(resultado.mensaje, false);
+                }
+            }
+        }
+
+        async function eliminarPermanente(usuarioId, nombreUsuario) {
+            if (confirm(`⚠️ ADVERTENCIA: ¿Estas COMPLETAMENTE SEGURO de eliminar PERMANENTEMENTE al usuario "${nombreUsuario}"?\n\n Esta accion NO se puede deshacer.\n Se ELIMINARAN todos sus datos (partidas, compras, etc.)\n\n¿Continuar?`)) {
+                if (confirm(`⚠️ ULTIMA CONFIRMACIÓN: \n\nEsto eliminara DEFINITIVAMENTE a "${nombreUsuario}" de la base de datos.\n\n ¿Proceder con la ELIMINACION PERMANENTE?`)) {
+                    const respuesta = await fetch(`/Admin/EliminarUsuarioPermanente?usuarioId=${usuarioId}`, {
+                        method: 'POST'
+                    });
+
+                    const resultado = await respuesta.json();
+                    
+                    if (resultado.exitoso) {
+                        mostrarMensaje(resultado.mensaje, true);
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        mostrarMensaje(resultado.mensaje, false);
+                    }
+                }
+            }
+        }
+
+        function mostrarMensaje(texto, esExito) {
+            const mensaje = document.createElement('div');
+            mensaje.className = `mensaje-notificacion ${esExito ? 'mensaje-exito' : 'mensaje-error'}`;
+            mensaje.textContent = texto;
+            
+            document.body.appendChild(mensaje);
+            
+            setTimeout(() => mensaje.remove(), 3000);
+        }
+    </script>
+}

@@ -1,0 +1,410 @@
+@model List<UsuarioAdmin>
+@{
+    ViewData["Title"] = "Gestión de Usuarios";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, #1a1a2e, #16213e);
+        min-height: 100vh;
+        padding: 20px;
+        color: white;
+    }
+    
+    .tienda-container {
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+    
+    .header-tienda {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 215, 0, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .nav-buttons {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .btn-nav {
+        padding: 12px 25px;
+        background: #4a5568;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+    
+    .btn-nav:hover {
+        background: #5a6578;
+        transform: translateY(-2px);
+    }
+
+    .titulo-seccion {
+        font-size: 32px;
+        margin-bottom: 20px;
+        color: #ffd700;
+    }
+
+    .users-table {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        border-radius: 15px;
+        padding: 20px;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: rgba(255, 215, 0, 0.2);
+        padding: 15px;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        color: #ffd700;
+    }
+
+    td {
+        padding: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    tr:hover {
+        background: rgba(255, 215, 0, 0.05);
+    }
+
+    .badge {
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .badge-active {
+        background: #4ade80;
+        color: white;
+    }
+
+    .badge-inactive {
+        background: #94a3b8;
+        color: white;
+    }
+
+    .btn-action {
+        padding: 8px 15px;
+        background: linear-gradient(135deg, #4ade80, #22c55e);
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-right: 5px;
+    }
+
+    .btn-action:hover {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        transform: scale(1.05);
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+    }
+
+    .mensaje-notificacion {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 20px 30px;
+        border-radius: 10px;
+        font-weight: bold;
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    .mensaje-exito {
+        background: #22c55e;
+        color: white;
+    }
+    
+    .mensaje-error {
+        background: #ef4444;
+        color: white;
+    }
+
+    @@keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        margin: 15% auto;
+        padding: 30px;
+        border: 2px solid #ffd700;
+        border-radius: 15px;
+        width: 400px;
+        box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3);
+    }
+
+    .modal-title {
+        font-size: 24px;
+        color: #ffd700;
+        margin-bottom: 20px;
+    }
+
+    .modal-input {
+        width: 100%;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        border-radius: 8px;
+        color: white;
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    .modal-input:focus {
+        outline: none;
+        border-color: #ffd700;
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-modal {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-confirm {
+        background: linear-gradient(135deg, #4ade80, #22c55e);
+        color: white;
+    }
+
+    .btn-cancel {
+        background: #4a5568;
+        color: white;
+    }
+</style>
+
+<div class="tienda-container">
+    <div class="header-tienda">
+        <div>
+            <div class="titulo-seccion" style="margin: 0;">Gestion de Usuarios</div>
+            <div style="margin-top: 5px; opacity: 0.9;">Total: @Model.Count usuarios</div>
+        </div>
+        <div class="nav-buttons">
+			<a href="/Admin/UsuariosEliminados" class="btn-nav" style="background: #ef4444;">Eliminados</a>
+            <a href="/Admin/Index" class="btn-nav">Dashboard</a>
+            <a href="/ControladorAutenticacion/CerrarSesion" class="btn-nav" style="background: #ef4444;">Salir</a>
+        </div>
+    </div>
+
+    <div class="users-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Email</th>
+                    <th>Fichas</th>
+                    <th>Partidas</th>
+                    <th>Compras</th>
+                    <th>Registro</th>
+                    <th>Último Acceso</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usuario in Model)
+                {
+                    <tr>
+                        <td>@usuario.Id</td>
+                        <td><strong>@usuario.Nombre</strong></td>
+                        <td>@usuario.Email</td>
+                        <td style="color: #ffd700; font-weight: bold;"><span id="fichas-@usuario.Id">@usuario.FichasDisponibles</span></td>
+                        <td>@usuario.TotalPartidas</td>
+                        <td>@usuario.TotalCompras</td>
+                        <td>@usuario.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                        <td>@(usuario.UltimoAcceso?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca")</td>
+                        <td>
+                            @if (usuario.UltimoAcceso != null && (DateTime.Now - usuario.UltimoAcceso.Value).TotalDays < 7)
+                            {
+                                <span class="badge badge-active">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-inactive">Inactivo</span>
+                            }
+                        </td>
+                        <td>
+                            <button class="btn-action" onclick="abrirModalDarFichas(@usuario.Id, '@usuario.Nombre')">Dar fichas</button>
+                            <button class="btn-action" onclick="abrirModalQuitarFichas(@usuario.Id, '@usuario.Nombre')">Quitar fichas</button>
+                            <button class="btn-action btn-danger" onclick="confirmarEliminar(@usuario.Id, '@usuario.Nombre')">Eliminar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="modalDarFichas" class="modal">
+    <div class="modal-content">
+        <div class="modal-title">Dar Fichas</div>
+        <p>Usuario: <strong id="nombreUsuarioDar"></strong></p>
+        <input type="number" id="cantidadDar" class="modal-input" placeholder="Cantidad de fichas" min="1" value="100">
+        <div class="modal-buttons">
+            <button class="btn-modal btn-confirm" onclick="darFichas()">Confirmar</button>
+            <button class="btn-modal btn-cancel" onclick="cerrarModales()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalQuitarFichas" class="modal">
+    <div class="modal-content">
+        <div class="modal-title">Quitar Fichas</div>
+        <p>Usuario: <strong id="nombreUsuarioQuitar"></strong></p>
+        <input type="number" id="cantidadQuitar" class="modal-input" placeholder="Cantidad de fichas" min="1" value="100">
+        <div class="modal-buttons">
+            <button class="btn-modal btn-confirm" onclick="quitarFichas()">Confirmar</button>
+            <button class="btn-modal btn-cancel" onclick="cerrarModales()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let usuarioIdActual = 0;
+
+        function abrirModalDarFichas(usuarioId, nombreUsuario) {
+            usuarioIdActual = usuarioId;
+            document.getElementById('nombreUsuarioDar').textContent = nombreUsuario;
+            document.getElementById('modalDarFichas').style.display = 'block';
+        }
+
+        function abrirModalQuitarFichas(usuarioId, nombreUsuario) {
+            usuarioIdActual = usuarioId;
+            document.getElementById('nombreUsuarioQuitar').textContent = nombreUsuario;
+            document.getElementById('modalQuitarFichas').style.display = 'block';
+        }
+
+        function cerrarModales() {
+            document.getElementById('modalDarFichas').style.display = 'none';
+            document.getElementById('modalQuitarFichas').style.display = 'none';
+        }
+
+        async function darFichas() {
+            const cantidad = parseInt(document.getElementById('cantidadDar').value);
+            
+            const respuesta = await fetch(`/Admin/DarFichas?usuarioId=${usuarioIdActual}&cantidad=${cantidad}`, {
+                method: 'POST'
+            });
+
+            const resultado = await respuesta.json();
+            
+            if (resultado.exitoso) {
+                mostrarMensaje(resultado.mensaje, true);
+                cerrarModales();
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                mostrarMensaje(resultado.mensaje, false);
+            }
+        }
+
+        async function quitarFichas() {
+            const cantidad = parseInt(document.getElementById('cantidadQuitar').value);
+            
+            const respuesta = await fetch(`/Admin/QuitarFichas?usuarioId=${usuarioIdActual}&cantidad=${cantidad}`, {
+                method: 'POST'
+            });
+
+            const resultado = await respuesta.json();
+            
+            if (resultado.exitoso) {
+                mostrarMensaje(resultado.mensaje, true);
+                cerrarModales();
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                mostrarMensaje(resultado.mensaje, false);
+            }
+        }
+
+        async function confirmarEliminar(usuarioId, nombreUsuario) {
+            if (confirm(`¿Estás seguro de eliminar al usuario "${nombreUsuario}"? Esta acción no se puede deshacer.`)) {
+                const respuesta = await fetch(`/Admin/EliminarUsuario?usuarioId=${usuarioId}`, {
+                    method: 'POST'
+                });
+
+                const resultado = await respuesta.json();
+                
+                if (resultado.exitoso) {
+                    mostrarMensaje(resultado.mensaje, true);
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    mostrarMensaje(resultado.mensaje, false);
+                }
+            }
+        }
+
+        function mostrarMensaje(texto, esExito) {
+            const mensaje = document.createElement('div');
+            mensaje.className = `mensaje-notificacion ${esExito ? 'mensaje-exito' : 'mensaje-error'}`;
+            mensaje.textContent = texto;
+            
+            document.body.appendChild(mensaje);
+            
+            setTimeout(() => mensaje.remove(), 3000);
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                cerrarModales();
+            }
+        }
+    </script>
+}

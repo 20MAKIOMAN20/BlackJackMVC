@@ -1,0 +1,220 @@
+@model ModeloLogin
+@{
+    ViewData["Title"] = "Iniciar Sesion";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, #1a1a2e, #16213e);
+        min-height: 100vh;
+        color: white;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+    }
+
+    .tienda-container {
+        max-width: 450px;
+        width: 90%;
+        background: rgba(239, 68, 68, 0.05);
+        border: 2px solid rgba(239, 68, 68, 0.3);
+        border-radius: 15px;
+        padding: 30px;
+        box-sizing: border-box;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .header-tienda {
+        background: rgba(239, 68, 68, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        border: 2px solid rgba(239, 68, 68, 0.3);
+        text-align: center;
+    }
+
+    .titulo-seccion {
+        font-size: 32px;
+        color: #ef4444;
+        margin: 0;
+        margin-bottom: 10px;
+    }
+
+    .subtitulo-seccion {
+        font-size: 16px;
+        color: #ccc;
+        margin: 0;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #ef4444;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid rgba(239, 68, 68, 0.3);
+        border-radius: 8px;
+        font-size: 16px;
+        background: transparent;
+        color: white;
+        transition: all 0.3s;
+        box-sizing: border-box;
+        margin-bottom: 20px;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+        outline: none;
+        border-color: #ef4444;
+        box-shadow: 0 0 8px #ef4444;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        color: #ccc;
+    }
+
+    .checkbox-group input {
+        margin-right: 8px;
+        width: auto;
+    }
+
+    .btn-action {
+        padding: 14px;
+        background: linear-gradient(135deg, #06402B 0%, #022815 100%);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 10px;
+    }
+
+    .btn-action:hover {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        transform: scale(1.05);
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 20px;
+        color: #ccc;
+    }
+
+    .auth-footer a {
+        color: #ef4444;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+        color: #22c55e;
+    }
+
+    .error-message {
+        background: #ef4444;
+        border: 1px solid #dc2626;
+        color: white;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .validation-error {
+        color: #ef4444;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+	
+	body.auth-page .container {
+		display: flex !important;
+		justify-content: center !important;
+		align-items: center !important;
+		min-height: 100vh !important;
+	}
+
+	body.auth-page main {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+    @@media (max-width: 480px) {
+        .tienda-container {
+            width: 95%;
+            padding: 20px;
+        }
+        .titulo-seccion {
+            font-size: 24px;
+        }
+        .subtitulo-seccion {
+            font-size: 14px;
+        }
+        input[type="text"],
+        input[type="password"] {
+            font-size: 14px;
+            padding: 10px;
+        }
+        .btn-action {
+            font-size: 16px;
+            padding: 12px;
+        }
+    }
+</style>
+
+<div class="tienda-container">
+    <div class="header-tienda">
+        <h1 class="titulo-seccion">Iniciar Sesion</h1>
+        <p class="subtitulo-seccion">Accede a tu cuenta de Blackjack</p>
+    </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="error-message">
+            @Html.ValidationSummary(false)
+        </div>
+    }
+
+    <form asp-action="Login" method="post">
+        <label asp-for="NombreUsuario">Usuario</label>
+        <input asp-for="NombreUsuario" placeholder="Tu nombre de usuario" />
+        <span asp-validation-for="NombreUsuario" class="validation-error"></span>
+
+        <label asp-for="Contrasena">Contraseña</label>
+        <input asp-for="Contrasena" type="password" placeholder="Tu contraseña" />
+        <span asp-validation-for="Contrasena" class="validation-error"></span>
+
+        <div class="checkbox-group">
+            <input asp-for="Recordarme" type="checkbox" id="recordarme" />
+            <label for="recordarme" asp-for="Recordarme">Recordarme</label>
+        </div>
+
+        <button type="submit" class="btn-action">Iniciar Sesion</button>
+    </form>
+
+    <div class="auth-footer">
+        ¿No tienes cuenta? <a asp-action="Registro">Registrate aqui</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
