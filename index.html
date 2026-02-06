@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack ft. Salazar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #2d5016, #1a3d0a);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            color: white;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #90ee90;
+            margin-bottom: 30px;
+        }
+
+        /* Barra de usuario y navegación */
+        .user-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+
+        .user-info {
+            color: #ffd700;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .fichas-display {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .nav-buttons-game {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-nav-game {
+            padding: 10px 20px;
+            background: #4a5568;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-nav-game:hover {
+            background: #5a6578;
+            transform: translateY(-2px);
+        }
+        
+        .hand {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .hand-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .hand-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .hand-total {
+            background: #1a5c1a;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .cards {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .card {
+            width: 80px;
+            height: 110px;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card.red {
+            color: #d32f2f;
+        }
+        
+        .card.black {
+            color: #000;
+        }
+        
+        .card-back {
+            width: 80px;
+            height: 110px;
+            background: #1976d2;
+            border: 2px solid #0d47a1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .message {
+            background: #ffd700;
+            color: #000;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .message.ganaste {
+            background: #4ade80;
+            color: white;
+        }
+
+        .message.perdiste {
+            background: #ef4444;
+            color: white;
+        }
+
+        .message.empate {
+            background: #3b82f6;
+            color: white;
+        }
+
+        /* Info de apuesta y ganancias */
+        .game-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #90ee90;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .info-value.ganancia {
+            color: #4ade80;
+        }
+
+        .info-value.perdida {
+            color: #ef4444;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-deal {
+            background: #2196f3;
+            color: white;
+        }
+        
+        .btn-hit {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .btn-stand {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-new {
+            background: #9c27b0;
+            color: white;
+        }
+
+        /* Modal de apuesta */
+        .modal-apuesta {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content-apuesta {
+            background: linear-gradient(to bottom, #2d5016, #1a3d0a);
+            margin: 10% auto;
+            padding: 30px;
+            border: 3px solid #ffd700;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3);
+        }
+
+        .modal-title {
+            font-size: 28px;
+            color: #ffd700;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .apuesta-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .btn-apuesta {
+            padding: 20px;
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            border: 2px solid #718096;
+            border-radius: 10px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-apuesta:hover {
+            background: linear-gradient(135deg, #5a6578, #3d4758);
+            border-color: #ffd700;
+            transform: scale(1.05);
+        }
+
+        .btn-apuesta.selected {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #000;
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .apuesta-custom {
+            margin-bottom: 25px;
+        }
+
+        .apuesta-custom label {
+            display: block;
+            color: #90ee90;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .apuesta-custom input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+        }
+
+        .apuesta-custom input:focus {
+            outline: none;
+            border-color: #ffed4e;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-confirmar-apuesta {
+            flex: 1;
+            padding: 15px;
+            background: #4ade80;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-confirmar-apuesta:hover {
+            background: #22c55e;
+            transform: scale(1.02);
+        }
+
+        .btn-cancelar-apuesta {
+            flex: 1;
+            padding: 15px;
+            background: #ef4444;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancelar-apuesta:hover {
+            background: #dc2626;
+        }
+
+        .error-apuesta {
+            color: #ef4444;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="user-bar">
+            <div class="user-info" id="nombre-usuario">Jugador</div>
+            <div class="fichas-display" id="fichas-usuario">1000 Fichas</div>
+            <div class="nav-buttons-game">
+                <button class="btn-nav-game" style="background: #4ade80;" onclick="resetearJuego()">Reiniciar</button>
+                <button class="btn-nav-game" style="background: #ef4444;" onclick="window.location.reload()">Salir</button>
+            </div>
+        </div>
+
+        <div class="game-info" id="game-info" style="display: none;">
+            <div class="info-card">
+                <div class="info-label">Apuesta</div>
+                <div class="info-value" id="apuesta-actual">0</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Ganancia</div>
+                <div class="info-value" id="ganancia-actual">0</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Fichas</div>
+                <div class="info-value" id="fichas-actuales">1000</div>
+            </div>
+        </div>
+
+        <div class="hand">
+            <div class="hand-header">
+                <div class="hand-title">Dealer</div>
+                <div class="hand-total" id="dealer-total">0</div>
+            </div>
+            <div class="cards" id="dealer-cards"></div>
+        </div>
+        
+        <div class="message" id="message">Presiona APOSTAR para comenzar</div>
+        
+        <div class="hand">
+            <div class="hand-header">
+                <div class="hand-title">Jugador</div>
+                <div class="hand-total" id="player-total">0</div>
+            </div>
+            <div class="cards" id="player-cards"></div>
+        </div>
+        
+        <div class="controls" id="controls">
+            <button class="btn-deal" onclick="abrirModalApuesta()">APOSTAR</button>
+        </div>
+    </div>
+
+    <div id="modalApuesta" class="modal-apuesta">
+        <div class="modal-content-apuesta">
+            <div class="modal-title">Realiza tu Apuesta</div>
+            
+            <div class="apuesta-options">
+                <button class="btn-apuesta" onclick="seleccionarApuesta(10)">10</button>
+                <button class="btn-apuesta" onclick="seleccionarApuesta(50)">50</button>
+                <button class="btn-apuesta" onclick="seleccionarApuesta(100)">100</button>
+                <button class="btn-apuesta" onclick="seleccionarApuesta(250)">250</button>
+                <button class="btn-apuesta" onclick="seleccionarApuesta(500)">500</button>
+                <button class="btn-apuesta" onclick="seleccionarApuesta(1000)">1000</button>
+            </div>
+
+            <div class="apuesta-custom">
+                <label>Ingresa una cantidad personalizada:</label>
+                <input type="number" id="apuestaCustom" min="1" placeholder="Cantidad de fichas" />
+            </div>
+
+            <div class="modal-buttons">
+                <button class="btn-confirmar-apuesta" onclick="confirmarApuesta()">Apostar</button>
+                <button class="btn-cancelar-apuesta" onclick="cerrarModalApuesta()">Cancelar</button>
+            </div>
+
+            <div class="error-apuesta" id="errorApuesta"></div>
+        </div>
+    </div>
+
+    <script>
+        // ====================================
+        // BACKEND SIMULADO EN JAVASCRIPT
+        // ====================================
+
+        // Estado del juego
+        const gameState = {
+            fichasUsuario: 1000,
+            partidaActual: null,
+            baraja: [],
+            apuestaSeleccionada: 0
+        };
+
+        // Clase Carta
+        class Carta {
+            constructor(valor, palo) {
+                this.valor = valor;
+                this.palo = palo;
+            }
+
+            obtenerValorNumerico() {
+                if (this.valor === 'A') return 11;
+                if (['J', 'Q', 'K'].includes(this.valor)) return 10;
+                return parseInt(this.valor);
+            }
+        }
+
+        // Clase Partida
+        class Partida {
+            constructor(apuesta) {
+                this.apuestaFichas = apuesta;
+                this.cartasJugador = [];
+                this.cartasDealer = [];
+                this.estadoPartida = 'jugando'; // jugando, terminado
+                this.gananciaFichas = 0;
+                this.mensajeParaMostrar = 'Tu turno';
+                this.mostrarSegundaCartaDealer = false;
+            }
+
+            get totalJugador() {
+                return this.calcularTotal(this.cartasJugador);
+            }
+
+            get totalDealer() {
+                return this.calcularTotal(this.cartasDealer);
+            }
+
+            calcularTotal(cartas) {
+                let total = 0;
+                let ases = 0;
+
+                for (let carta of cartas) {
+                    let valor = carta.obtenerValorNumerico();
+                    if (valor === 11) ases++;
+                    total += valor;
+                }
+
+                // Ajustar ases si es necesario
+                while (total > 21 && ases > 0) {
+                    total -= 10;
+                    ases--;
+                }
+
+                return total;
+            }
+
+            esBlackjack(cartas) {
+                return cartas.length === 2 && this.calcularTotal(cartas) === 21;
+            }
+        }
+
+        // Crear baraja
+        function crearBaraja() {
+            const palos = ['♠', '♥', '♦', '♣'];
+            const valores = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+            const baraja = [];
+
+            for (let palo of palos) {
+                for (let valor of valores) {
+                    baraja.push(new Carta(valor, palo));
+                }
+            }
+
+            return baraja;
+        }
+
+        // Mezclar baraja
+        function mezclarBaraja(baraja) {
+            for (let i = baraja.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [baraja[i], baraja[j]] = [baraja[j], baraja[i]];
+            }
+            return baraja;
+        }
+
+        // Sacar una carta de la baraja
+        function sacarCarta() {
+            if (gameState.baraja.length === 0) {
+                gameState.baraja = mezclarBaraja(crearBaraja());
+            }
+            return gameState.baraja.pop();
+        }
+
+        // Repartir cartas iniciales
+        function repartirCartas(apuesta) {
+            if (apuesta > gameState.fichasUsuario) {
+                return {
+                    error: true,
+                    mensaje: 'No tienes suficientes fichas'
+                };
+            }
+
+            // Crear nueva baraja si es necesario
+            if (gameState.baraja.length < 20) {
+                gameState.baraja = mezclarBaraja(crearBaraja());
+            }
+
+            // Crear nueva partida
+            const partida = new Partida(apuesta);
+
+            // Repartir 2 cartas al jugador y 2 al dealer
+            partida.cartasJugador.push(sacarCarta());
+            partida.cartasDealer.push(sacarCarta());
+            partida.cartasJugador.push(sacarCarta());
+            partida.cartasDealer.push(sacarCarta());
+
+            // Restar apuesta de fichas
+            gameState.fichasUsuario -= apuesta;
+
+            // Verificar blackjack
+            const jugadorBlackjack = partida.esBlackjack(partida.cartasJugador);
+            const dealerBlackjack = partida.esBlackjack(partida.cartasDealer);
+
+            if (jugadorBlackjack || dealerBlackjack) {
+                partida.mostrarSegundaCartaDealer = true;
+                partida.estadoPartida = 'terminado';
+
+                if (jugadorBlackjack && dealerBlackjack) {
+                    partida.mensajeParaMostrar = 'Empate - Ambos tienen BLACKJACK';
+                    partida.gananciaFichas = 0;
+                    gameState.fichasUsuario += apuesta; // Devolver apuesta
+                } else if (jugadorBlackjack) {
+                    partida.mensajeParaMostrar = '¡BLACKJACK! Ganaste';
+                    partida.gananciaFichas = Math.floor(apuesta * 2.5);
+                    gameState.fichasUsuario += partida.gananciaFichas;
+                } else {
+                    partida.mensajeParaMostrar = 'Dealer tiene BLACKJACK - Perdiste';
+                    partida.gananciaFichas = -apuesta;
+                }
+            }
+
+            gameState.partidaActual = partida;
+            return obtenerEstadoPartida();
+        }
+
+        // Pedir carta
+        function pedirCarta() {
+            const partida = gameState.partidaActual;
+            if (!partida || partida.estadoPartida === 'terminado') {
+                return obtenerEstadoPartida();
+            }
+
+            partida.cartasJugador.push(sacarCarta());
+
+            if (partida.totalJugador > 21) {
+                partida.estadoPartida = 'terminado';
+                partida.mostrarSegundaCartaDealer = true;
+                partida.mensajeParaMostrar = `Te pasaste de 21 - Perdiste`;
+                partida.gananciaFichas = -partida.apuestaFichas;
+            }
+
+            return obtenerEstadoPartida();
+        }
+
+        // Plantarse
+        function plantarse() {
+            const partida = gameState.partidaActual;
+            if (!partida || partida.estadoPartida === 'terminado') {
+                return obtenerEstadoPartida();
+            }
+
+            partida.mostrarSegundaCartaDealer = true;
+
+            // Dealer debe pedir hasta tener 17 o más
+            while (partida.totalDealer < 17) {
+                partida.cartasDealer.push(sacarCarta());
+            }
+
+            // Determinar ganador
+            const totalJugador = partida.totalJugador;
+            const totalDealer = partida.totalDealer;
+
+            partida.estadoPartida = 'terminado';
+
+            if (totalDealer > 21) {
+                partida.mensajeParaMostrar = `Dealer se pasó de 21 - Ganaste`;
+                partida.gananciaFichas = partida.apuestaFichas * 2;
+                gameState.fichasUsuario += partida.gananciaFichas;
+            } else if (totalJugador > totalDealer) {
+                partida.mensajeParaMostrar = `${totalJugador} vs ${totalDealer} - Ganaste`;
+                partida.gananciaFichas = partida.apuestaFichas * 2;
+                gameState.fichasUsuario += partida.gananciaFichas;
+            } else if (totalJugador < totalDealer) {
+                partida.mensajeParaMostrar = `${totalJugador} vs ${totalDealer} - Perdiste`;
+                partida.gananciaFichas = -partida.apuestaFichas;
+            } else {
+                partida.mensajeParaMostrar = `${totalJugador} vs ${totalDealer} - Empate`;
+                partida.gananciaFichas = 0;
+                gameState.fichasUsuario += partida.apuestaFichas; // Devolver apuesta
+            }
+
+            return obtenerEstadoPartida();
+        }
+
+        // Obtener estado actual de la partida
+        function obtenerEstadoPartida() {
+            const partida = gameState.partidaActual;
+            return {
+                cartasJugador: partida.cartasJugador,
+                cartasDealer: partida.cartasDealer,
+                totalJugador: partida.totalJugador,
+                totalDealer: partida.totalDealer,
+                estadoPartida: partida.estadoPartida,
+                apuestaFichas: partida.apuestaFichas,
+                gananciaFichas: partida.gananciaFichas,
+                mensajeParaMostrar: partida.mensajeParaMostrar,
+                mostrarSegundaCartaDealer: partida.mostrarSegundaCartaDealer,
+                fichasUsuario: gameState.fichasUsuario
+            };
+        }
+
+        // ====================================
+        // INTERFAZ DE USUARIO
+        // ====================================
+
+        window.onload = function() {
+            cargarFichasUsuario();
+        };
+
+        function cargarFichasUsuario() {
+            document.getElementById('fichas-usuario').textContent = `${gameState.fichasUsuario} Fichas`;
+        }
+
+        function abrirModalApuesta() {
+            if (gameState.fichasUsuario <= 0) {
+                alert('No tienes fichas suficientes. Reinicia el juego.');
+                return;
+            }
+
+            document.getElementById('modalApuesta').style.display = 'block';
+            document.getElementById('errorApuesta').textContent = '';
+            document.getElementById('apuestaCustom').value = '';
+            
+            document.querySelectorAll('.btn-apuesta').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+        }
+
+        function cerrarModalApuesta() {
+            document.getElementById('modalApuesta').style.display = 'none';
+            gameState.apuestaSeleccionada = 0;
+        }
+
+        function seleccionarApuesta(cantidad) {
+            gameState.apuestaSeleccionada = cantidad;
+            document.getElementById('apuestaCustom').value = cantidad;
+            
+            document.querySelectorAll('.btn-apuesta').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+
+        function confirmarApuesta() {
+            const inputCustom = document.getElementById('apuestaCustom').value;
+            const apuesta = inputCustom ? parseInt(inputCustom) : gameState.apuestaSeleccionada;
+
+            if (!apuesta || apuesta <= 0) {
+                document.getElementById('errorApuesta').textContent = 'Debes seleccionar o ingresar una apuesta válida';
+                return;
+            }
+
+            if (apuesta > gameState.fichasUsuario) {
+                document.getElementById('errorApuesta').textContent = `No tienes suficientes fichas. Tienes: ${gameState.fichasUsuario}`;
+                return;
+            }
+
+            cerrarModalApuesta();
+            iniciarPartida(apuesta);
+        }
+
+        function iniciarPartida(apuesta) {
+            const resultado = repartirCartas(apuesta);
+            
+            if (resultado.error) {
+                alert(resultado.mensaje);
+                return;
+            }
+
+            actualizarVista(resultado);
+        }
+
+        function pedirCartaJugador() {
+            const resultado = pedirCarta();
+            actualizarVista(resultado);
+        }
+
+        function plantarseJugador() {
+            const resultado = plantarse();
+            actualizarVista(resultado);
+        }
+
+        function actualizarVista(partida) {
+            document.getElementById('player-cards').innerHTML = 
+                partida.cartasJugador.map(c => crearCarta(c)).join('');
+            
+            document.getElementById('dealer-cards').innerHTML = 
+                partida.cartasDealer.map((c, i) => {
+                    if (i === 1 && !partida.mostrarSegundaCartaDealer) {
+                        return '<div class="card-back">🂠</div>';
+                    }
+                    return crearCarta(c);
+                }).join('');
+            
+            document.getElementById('player-total').textContent = partida.totalJugador;
+            document.getElementById('dealer-total').textContent = 
+                partida.mostrarSegundaCartaDealer ? partida.totalDealer : '?';
+            
+            document.getElementById('game-info').style.display = 'grid';
+            document.getElementById('apuesta-actual').textContent = partida.apuestaFichas;
+            
+            const gananciaElement = document.getElementById('ganancia-actual');
+            gananciaElement.textContent = partida.gananciaFichas > 0 ? `+${partida.gananciaFichas}` : partida.gananciaFichas;
+            gananciaElement.className = 'info-value';
+            if (partida.gananciaFichas > 0) {
+                gananciaElement.classList.add('ganancia');
+            } else if (partida.gananciaFichas < 0) {
+                gananciaElement.classList.add('perdida');
+            }
+            
+            document.getElementById('fichas-actuales').textContent = partida.fichasUsuario;
+            document.getElementById('fichas-usuario').textContent = `${partida.fichasUsuario} Fichas`;
+            
+            const mensajeElement = document.getElementById('message');
+            mensajeElement.textContent = partida.mensajeParaMostrar;
+            mensajeElement.className = 'message';
+            
+            if (partida.estadoPartida === 'terminado') {
+                if (partida.mensajeParaMostrar.includes('Ganaste') || partida.mensajeParaMostrar.includes('BLACKJACK')) {
+                    mensajeElement.classList.add('ganaste');
+                } else if (partida.mensajeParaMostrar.includes('Perdiste') || partida.mensajeParaMostrar.includes('pasaste')) {
+                    mensajeElement.classList.add('perdiste');
+                } else {
+                    mensajeElement.classList.add('empate');
+                }
+            }
+            
+            actualizarBotones(partida.estadoPartida);
+        }
+
+        function crearCarta(carta) {
+            const esRoja = carta.palo === '♥' || carta.palo === '♦';
+            return `<div class="card ${esRoja ? 'red' : 'black'}">
+                        <div>${carta.valor}</div>
+                        <div>${carta.palo}</div>
+                    </div>`;
+        }
+
+        function actualizarBotones(estado) {
+            let html = '';
+            if (estado === 'jugando') {
+                html = `<button class="btn-hit" onclick="pedirCartaJugador()">PEDIR</button>
+                        <button class="btn-stand" onclick="plantarseJugador()">PLANTARSE</button>`;
+            } else {
+                html = '<button class="btn-new" onclick="abrirModalApuesta()">NUEVA PARTIDA</button>';
+            }
+            document.getElementById('controls').innerHTML = html;
+        }
+
+        function resetearJuego() {
+            if (confirm('¿Seguro que quieres reiniciar el juego? Se restablecerán tus fichas a 1000.')) {
+                gameState.fichasUsuario = 1000;
+                gameState.partidaActual = null;
+                gameState.baraja = [];
+                
+                document.getElementById('player-cards').innerHTML = '';
+                document.getElementById('dealer-cards').innerHTML = '';
+                document.getElementById('player-total').textContent = '0';
+                document.getElementById('dealer-total').textContent = '0';
+                document.getElementById('message').textContent = 'Presiona APOSTAR para comenzar';
+                document.getElementById('message').className = 'message';
+                document.getElementById('game-info').style.display = 'none';
+                
+                cargarFichasUsuario();
+                actualizarBotones('inicial');
+            }
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('modalApuesta')) {
+                cerrarModalApuesta();
+            }
+        }
+    </script>
+</body>
+</html>
