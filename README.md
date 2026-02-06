@@ -1,6 +1,7 @@
-# Blackjack ft. Salazar
+# BlackjackMVC
 
-Un juego de Blackjack completamente funcional desarrollado en HTML, CSS y JavaScript puro. ¡Sin necesidad de servidor!
+Un juego de Blackjack completamente funcional desarrollado en .NET9 MVC con HTML, CSS y JavaScript
+Con la base de datos SQLite
 
 ## Licencia y Uso
 
@@ -25,18 +26,7 @@ Puedes:
 - Pagos: 2x en victoria normal, 2.5x en Blackjack
 - Sistema de reinicio de juego
 
-## Cómo Usar
-
-1. Descarga el archivo `blackjack-completo.html`
-2. Abre el archivo en cualquier navegador web moderno
-3. ¡Empieza a jugar!
-
-**No se requiere:**
-- Servidor web
-- Base de datos
-- Instalación de dependencias
-- Configuración adicional
-
+   
 ## Reglas del Juego
 
 1. Comienzas con **1000 fichas**
@@ -59,29 +49,16 @@ Puedes:
 
 ## Tecnologías
 
-- HTML5
-- CSS3 (con gradientes y animaciones)
+- HTML
+- CSS
 - JavaScript ES6+ (Vanilla JS)
+- C#
 
 ## Mejoras y Sugerencias
 
-**¿Tienes ideas para mejorar el juego?**
+**¿Tienes ideas para mejorar el codigo?**
 
 Si encuentras bugs, tienes sugerencias de mejoras o quieres contribuir con nuevas características, ¡no dudes en contactarme!
-
-Algunas ideas que podrían implementarse:
-- Efectos de sonido
-- Mejoras en diseño responsive para móviles
-- Modo multijugador
-- Sistema de guardado de progreso (LocalStorage)
-- Estadísticas de juego (partidas ganadas/perdidas)
-- Animaciones de cartas
-- Más variantes de Blackjack
-- Sistema de logros
-
-## Contacto
-
-Si quieres comentar mejoras, reportar bugs o simplemente compartir cómo usaste este código, ¡me encantaría saberlo!
 
 ---
 
@@ -94,6 +71,6 @@ Gracias por usar este código. Si te fue útil, considera:
 
 ---
 
-**Hecho con amor para la comunidad de desarrolladores**
+**Lo hice para la comunidad de desarrolladores**
 
 *¡Diviértete jugando y programando!*
