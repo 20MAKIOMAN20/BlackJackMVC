@@ -3,6 +3,11 @@
 Un juego de Blackjack completamente funcional desarrollado en .NET9 MVC con HTML, CSS y JavaScript
 Con la base de datos SQLite
 
+Una Pequeña vista previa del proyecto:
+
+https://20makioman20.github.io/BlackJackMVC
+
+
 ## Licencia y Uso
 
 **Este código es completamente público y de libre uso.**
