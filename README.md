@@ -16,7 +16,6 @@ Puedes:
 - Usar el código libremente
 - Modificarlo como desees
 - Replicarlo en tus proyectos
-- Distribuirlo
 - Usarlo para aprender
 - Hacer lo que quieras con él
 
